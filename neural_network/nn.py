@@ -1,13 +1,15 @@
 import numpy as np
 import layer
 import util
+import learning
 
 class NeuralNetwork3Layers :
-    def __init__(self, inputDim, hiddenDim, outputDim):
+    def __init__(self, inputDim, hiddenDim, outputDim, seed = 1):
+
         # 三層ニューラルネットワーク
         self.inputLayer = layer.InputLayer(inputDim)
-        self.hiddenLayer = layer.HiddenLayer(hiddenDim,self.inputLayer)
-        self.outputLayer = layer.OutputLayer(outputDim,self.hiddenLayer)
+        self.hiddenLayer = layer.HiddenLayer(hiddenDim,self.inputLayer,seed)
+        self.outputLayer = layer.OutputLayer(outputDim,self.hiddenLayer,seed)
         # 正解データ
         self.answer = np.zeros(outputDim)
 
@@ -46,10 +48,7 @@ class NeuralNetwork3Layers :
     def update(self, updateRatio = 0.01):
         self.outputLayer.update(self.answer, updateRatio)
 
-    def learn(self, trainingData, batchSize = 100, seed = 1, updateRatio = 0.01):
-        trainingData.shuffle(seed)
-        imageBatch = trainingData.getImageBatch(batchSize)
-        answerBatch = trainingData.getAnswerVecotrBatch(batchSize)
+    def learn(self, imageBatch, answerBatch, updateRatio = 0.01):
         self.setInputBatch(imageBatch)
         self.setAnswerBatch(answerBatch)
         self.calculate()
@@ -60,23 +59,26 @@ class NeuralNetwork3Layers :
         fileHS = "./learned_data/hiddenShift",
         fileOW = "./learned_data/outputWeight",
         fileOS = "./learned_data/outputShift") :
+        """
         self.hiddenLayer.confirmParameters()
         self.outputLayer.confirmParameters()
+        """
         np.save(fileHW, self.hiddenLayer.weight)
         np.save(fileHS, self.hiddenLayer.shift)
         np.save(fileOW, self.outputLayer.weight)
         np.save(fileOS, self.outputLayer.shift)
+        print("saved.")
 
     def load(self,
         fileHW = "./learned_data/hiddenWeight.npy",
         fileHS = "./learned_data/hiddenShift.npy",
         fileOW = "./learned_data/outputWeight.npy",
         fileOS = "./learned_data/outputShift.npy") :
-
+        """
         print("\n >> BEFORE")
         self.hiddenLayer.confirmParameters()
         self.outputLayer.confirmParameters()
-
+        """
         hw = np.load(fileHW)
         hs = np.load(fileHS)
         ow = np.load(fileOW)
@@ -85,7 +87,23 @@ class NeuralNetwork3Layers :
         self.hiddenLayer.setShift(hs)
         self.outputLayer.setWeight(ow)
         self.outputLayer.setShift(os)
-
+        """
         print("\n >> AFTER")
         self.hiddenLayer.confirmParameters()
         self.outputLayer.confirmParameters()
+        """
+        print("loaded.")
+
+class NeuralNetwork3LayersReLU(NeuralNetwork3Layers) :
+    def __init__(self, inputDim, hiddenDim, outputDim, seed = 1):
+
+        # 三層ニューラルネットワーク
+        self.inputLayer = layer.InputLayer(inputDim)
+        self.hiddenLayer = layer.HiddenLayer(hiddenDim,self.inputLayer,seed)
+        self.outputLayer = layer.OutputLayer(outputDim,self.hiddenLayer,seed)
+
+        self.hiddenLayer.setActivator(util.relu)
+        self.hiddenLayer.setBackPropagator(learning.backPropReLU)
+
+        # 正解データ
+        self.answer = np.zeros(outputDim)

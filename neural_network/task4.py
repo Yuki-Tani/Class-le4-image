@@ -2,6 +2,7 @@ import ioex
 import layer
 import util
 import nn
+import sys
 import matplotlib.pyplot as plt
 from pylab import cm
 
@@ -64,7 +65,6 @@ if mode == 0 :
 
 elif mode == 1:
     currentQuantity = 0
-    period = 0
     repeat = testingData.getSize()
     print("calculate")
     for i in range(0,repeat):
@@ -75,11 +75,11 @@ elif mode == 1:
         result = neuralNet.calculate().argmax()
         if result == answer:
             currentQuantity = currentQuantity + 1
-        if i // (repeat // 10) > period :
-            period = period + 1
-            print(".")
+        #表示
+        sys.stdout.write("\r%d" % (i+1))
+        sys.stdout.flush()
 
-    print("Result")
+    print("\nResult")
 
     print("percent of current : " + str(currentQuantity / repeat * 100) + "%")
 

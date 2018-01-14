@@ -25,6 +25,21 @@ class ComplexMaker:
         # print("loc:0 scale:"+str(1.0/size[1]))
         return matrix
 
+class BatchMaker:
+    def __init__(self, mnistDataBox, batchSize):
+        self.box = mnistDataBox
+        self.batchSize = batchSize
+        self.index = 0
+
+    def reset(self, seed = 0):
+        self.index = seed
+
+    def getNextBatch(self):
+        imageBatch = self.box.getImageBatch(self.batchSize,self.index)
+        answerBatch = self.box.getAnswerVecotrBatch(self.batchSize,self.index)
+        self.index = self.index + self.batchSize
+        return (imageBatch, answerBatch)
+
 ### activator ###
 
 def identity(x):
@@ -32,6 +47,10 @@ def identity(x):
 
 def sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))
+
+def relu(x):
+    x[x<0] = 0
+    return x
 
 def softmax(x):
     #print(x)

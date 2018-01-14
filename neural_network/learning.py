@@ -27,6 +27,12 @@ def backPropSigmoid(conversionLayer, dEdOut):
     dEdActivatorIn = (1-activatorOut)*activatorOut*dEdOut
     return backPropFullyConnect(conversionLayer, dEdActivatorIn)
 
+def backPropReLU(conversionLayer, dEdOut):
+    activatorOut = conversionLayer.getOutput()
+    activatorOut[activatorOut>0] = 1 #dReLU
+    dEdActivatorIn = activatorOut*dEdOut
+    return backPropFullyConnect(conversionLayer, dEdActivatorIn)
+
 def backPropSoftmaxAndCrossEntropy(conversionLayer, answerMatrix):
     activatorOut = conversionLayer.getOutput()
     batchSize = answerMatrix.shape[1]

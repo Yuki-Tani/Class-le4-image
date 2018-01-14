@@ -1,0 +1,18 @@
+nomal
+
+batchSize 10
+seed 0
+update_ratio(m) 10
+
+<10 epoch>
+total loss : 0.23848893235
+total percent of current answer : 93.18%
+
+<20 epoch>
+total loss : 0.168237209053
+total percent of current answer : 95.1766666667%
+
+<30 epoch>
+total loss : 0.131076241827
+total percent of current answer : 96.2866666667%
+(test 95.74 %, contest 62%)

@@ -93,7 +93,54 @@ def calcLossTest():
     print(label)
     print(util.crossEntropy(out,label))
 
+def dataTest():
+    inputM = ioex.InputManager()
+    trainingData = inputM.getMnistTrainingData()
 
+    import time
+    print("\ngetImageBatch")
+    for i in range(1,11):
+        #計測スタート
+        start = time.time()
+        batch = trainingData.getImageBatch(50*i)
+        #print(batch)
+        #print(batch.shape)
+        #計測終了
+        elapsed_time = time.time() - start
+        print(50*i,end=": ")
+        print ("elapsed_time:{0}".format(elapsed_time) + "[sec]")
+
+    print("\ngetAnswerVectorBatch")
+    for i in range(1,11):
+        #計測スタート
+        start = time.time()
+        batch = trainingData.getAnswerVecotrBatch(50*i)
+        #計測終了
+        elapsed_time = time.time() - start
+        print(50*i,end=": ")
+        print ("elapsed_time:{0}".format(elapsed_time) + "[sec]")
+
+    print("\nshaffle")
+    #計測スタート
+    start = time.time()
+    trainingData.shuffle()
+    #計測終了
+    elapsed_time = time.time() - start
+    print ("elapsed_time:{0}".format(elapsed_time) + "[sec]")
+
+ar = np.array([[1,-2],[-7,1],[0,0]])
+print(util.relu(ar))
+print(util.sigmoid(ar))
+
+#dataTest()
+
+"""
+print(np.zeros((10,1)))
+print(np.zeros((1,10)))
+print(np.zeros((10,2)))
+print(np.zeros((2,10)))
+"""
+"""
 output = np.array([[100,2,3],[4,500,6],[7,800,9],[10,11,12]])
 batch = np.array([[1,0,0],[0,0,0],[0,1,1],[0,0,0]])
 
@@ -107,6 +154,7 @@ result[True] = 0
 print(result)
 result[hit] = 1
 print(result.mean() * 100)
+"""
 
 """
 print(SAMPLE_OUTPUT)
@@ -123,7 +171,8 @@ print(read)
 #calcLossTest()
 """
 three = np.array([[[1,2],[3,4],[5,6]],[[7,8],[9,10],[11,12]],[[13,14],[15,16],[17,18]]])
-two = three.reshape((3,6))
+three = three[0:2]
+two = three.reshape((2,-1)).T
 print(two)
 """
 #a = np.array([[2,3],[4,5],[6,7]])

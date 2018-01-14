@@ -1,0 +1,6 @@
+#サイズが大きいため外す
+MNIST
+#提出用zipフォルダは外す
+*.zip
+#ファイル情報直書きのため管理から外す
+neural_network/ioex.py

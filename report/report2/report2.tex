@@ -1,0 +1,441 @@
+\documentclass{ujarticle} %upLaTeXで動いているのでunicode対応のこのクラス
+\usepackage{xcolor}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{float}
+\usepackage{ascmac}
+% todo command
+\newcommand\todo[1]{\textcolor{red}{[todo] #1}}
+\newcommand\tips[1]{\textcolor{blue}{#1}}
+
+\begin{document}
+\title{計算機科学実験及演習4 \\ \bf 画像認識 第２回レポート}
+% ↓ここに自分の氏名を記入
+\author{谷　勇輝 \\ \\入学年 平成27年 \\ 学籍番号 1029-27-2870}
+\西暦
+\date{締切日: 2018年1月11日\\ 提出日: 2018年1月10日}
+\maketitle
+\newpage
+
+% レポートには，課題内容，作成したプログラムの説明，実行結果，工夫点，問題点を記述して下さい．これとは別にソースファイルを添付して下さい．レポートは報告書の形式を要求します．くだけた文体，支離滅裂な文章については低評価となります
+
+\begin{itembox}[l]{[課題 2] ミニバッチ対応＆クロスエントロピー誤差の計算}
+  [課題 1] のコードをベースに，ミニバッチ（＝複数枚の画像）を入力可能とするように改良し，さらにクロスエントロピー誤差を計算するプログラムを作成せよ．
+  \begin{itemize}
+    \item MNIST のテスト画像 10000 枚の中からランダムに B 枚をミニバッチとして取り出
+    すこと．
+    \item クロスエントロピー誤差の平均を標準出力に出力すること．
+    \item ニューラルネットワークの構造，重みは課題 1 と同じでよい．
+    \item バッチサイズ B は自由に決めて良い（100 程度がちょうどよい）．
+    \item ミニバッチを取り出す処理はランダムに行う
+  \end{itemize}
+\end{itembox}
+
+\section{作成したプログラム}
+\subsection{プログラム構成}
+今回作成したプログラムは以下のモジュール、クラスからなる。
+
+オブジェクト指向・ドメインモデルに基づいた適切なモジュール設計により、今後の開発がよりスムーズになるよう注意した。
+
+\begin{verbatim}
+neural_network
+ ┣ ioex.py            … 入出力系モジュール
+ ┃ ┣ InputManager       … 入力を担当するクラス
+ ┃ ┗ OutputManager      … 出力を担当するクラス
+ ┣ data.py            … プログラムで扱う基本データ系モジュール
+ ┃ ┣ MnistDataBox       … MNISTデータ群を表すクラス
+ ┃ ┗ MnistData          … 単一のMNISTデータを表すクラス
+ ┣ layer.py           … ニューラルネットの層モジュール
+ ┃ ┣ Layer              … 基本の層構造を表すベースクラス
+ ┃ ┣ InputLayer         … 入力層を表すクラス
+ ┃ ┣ ConversionLayer    … 変換を行う層を表すクラス
+ ┃ ┣ HiddenLayer        … 中間層を表すクラス
+ ┃ ┗ OutputLayer        … 出力層を表すクラス
+ ┣ util.py            … 汎用関数や汎用クラスを集めたモジュール
+ ┃ ┣ ComplexMaker       … numpyのrandomを扱うクラス
+ ┃ ┗ 各種数学メソッド
+ ┣ nn.py              … 組み合わせ済ニューラルネットのモジュール
+ ┃ ┗ NeuralNetwork3Layers　… 3層ニューラルネットのクラス
+ ┣ test.py            … 動作確認・テスト用モジュール
+ ┣ task1.py           … 課題１プログラム
+ ┗ task2.py           … 課題２プログラム
+MNIST
+\end{verbatim}
+
+課題１から追加したのは、nn.pyモジュールとtask2.pyプログラムである。nn.pyモジュールでは、課題１で構築した３層ニューラルネットワークとその機能をNeuralNetwork3Layersクラスに集約した。task2.pyは課題２のメインプログラムである。
+
+また、ミニバッチの入力に対応し、クロスエントロピーの計算をできるようにするため、既存のモジュールの各クラスにも必要なメソッドを追加した。
+
+\subsection{メインプログラム}
+
+課題２のメインプログラムtest2.pyは以下の通りである。
+入力はニューラルネットに入力するバッチの内容を確定するための乱数シード、出力はニューラルネットの出力から算出されたクロスエントロピー誤差である。追加の機能として、入出力を任意の回数行えるようにした。
+
+\begin{itembox}[l]{test1.py}
+  \begin{verbatim}
+1    import ioex (以下import省略)
+5
+6    BATCH_QUANTITY = 100
+7
+8    print("### task2 ###")
+9
+10   print("batch mode")
+11
+12   # 入出力準備
+13   inputM = ioex.InputManager()
+14   outputM = ioex.OutputManager()
+15   testingData = inputM.getMnistTestingData()
+16   testingData.shuffle()
+17
+18   neuralNet = nn.NeuralNetwork3Layers(28*28, 50, 10)
+19
+20   loop = True
+21   while(loop):
+22       print("Input random seed number of batch.")
+23       begin = inputM.selectNumber()
+24       imageBatch = testingData
+                .getImageBatch(BATCH_QUANTITY, begin)
+25       answerBatch = testingData
+                .getAnswerVecotrBatch(BATCH_QUANTITY, begin)
+26       neuralNet.setInputBatch(imageBatch)
+27       neuralNet.setAnswerBatch(answerBatch)
+28
+29       print("start")
+30       result = neuralNet.calculate()
+31       #print(result)
+32       totalLoss = neuralNet.getLoss()
+33
+34       print("\nResult.")
+35       print("totalLoss : " + str(totalLoss))
+36
+37       print("\ncontinue?")
+38       loop = inputM.selectYesOrNo()
+39
+40   print("Bye.")
+  \end{verbatim}
+\end{itembox}
+
+16行目では、MNISTデータ群の順番をランダムに変更するメソッドMnistDataBox\#shuffleを呼び出している。これは後の課題で複数回バッチデータによる学習を行う際に、入力バッチデータを変更するためのメソッドである。18行目では３層ニューラルネットワークの作成を行っている。NeuralNetwork3Layersクラスのコンストラクタの第１引数はInputLayerの次元数、第２引数はHiddenLayerの次元数、第３引数はOutputLayerの次元数である。各Layerは生成された時にコンストラクタによって初期化され、その際に各重みの値がランダムに決定される。
+
+入力後のプログラムの流れを示す。まず24,25行目のMnistDataBox\# getImageBatchメソッド,MnistDataBox\#getAnswerVecotrBatchメソッド によって入力バッチとそれに対応するラベルバッチを取得する。いずれのメソッドも第１引数は取得するバッチサイズ、第２引数はバッチ取得の際に使用する基準位置を指定する。次に、26,27行目のNeuralNetwork3Layers\#setInputBatchメソッド,NeuralNetwork3Layers\#setAnswerBatchメソッドによって入力バッチとラベルバッチをニューラルネットにセットする。続いて、30行目のNeuralNetwork3Layers\#calculateメソッドで入力バッチに基づいてニューラルネット内の計算を行う。最後に32行目のNeuralNetwork3Layers\#getLossメソッドによって 出力とラベルバッチからクロスエントロピー誤差を計算している。
+
+%############################################
+\subsection{nnモジュール}
+構成済みのニューラルネットワークを提供するモジュール。メインプログラムではこのnnモジュール内のクラスより下位のモジュールやクラス（layerモジュール等）を認知、操作する必要はないようモジュール作成をした。
+
+\subsubsection{NeuralNetwork3Layersクラス}
+構成済み３層ニューラルネットワークのクラス。Layerモジュールのメソッドを隠蔽する。また、ラベルデータの保持、管理を行っている。
+
+\begin{itembox}[l]{nn.py}
+  \begin{verbatim}
+ class NeuralNetwork3Layers :
+    def __init__(self, inputDim, hiddenDim, outputDim):
+        # 三層ニューラルネットワーク
+        self.inputLayer = layer.InputLayer(inputDim)
+        self.hiddenLayer =
+          layer.HiddenLayer(hiddenDim,self.inputLayer)
+        self.outputLayer =
+          layer.OutputLayer(outputDim,self.hiddenLayer)
+        # 正解データ
+        self.answer = np.zeros(outputDim)
+
+    ## 入力系メソッド ###
+
+    def setInput(self, inputData):
+        self.inputLayer.setInput(inputData)
+
+    def setInputBatch(self, inputBatch):
+        self.inputLayer.setInputBatch(inputBatch)
+
+    def setAnswer(self, answerVector):
+        self.answer =
+          answerVector.reshape(answerVector.size,1)
+        if(self.answer.size != self.outputLayer.dimension):
+            print("WARNING!
+              Input data is NOT match to deimension")
+
+    def setAnswerBatch(self,answerBatch):
+        self.answer = answerBatch
+
+    ## 活性メソッド ##
+
+    def calculate(self):
+        return self.outputLayer.calculate()
+
+    def getLoss(self):
+        return self.outputLayer.getLoss(self.answer)
+  \end{verbatim}
+\end{itembox}
+
+主なメソッドは以下の通りである。
+\begin{itemize}
+  \item \_\_init\_\_(self, inputDim, hiddenDim, outputDim)
+
+  インスタンスを作成し値を初期化する。３つの層に含まれるニューロンの数(次元数)をここで決定する。
+
+  \item setInput(self, inputData)
+
+  単一入力をニューラルネットにセットする。
+
+  \item setInputBatch(self, inputBatch)
+
+  バッチ入力をニューラルネットにセットする。
+
+  \item setAnswer(self, answerVector)
+
+  単一ラベルデータをニューラルネットにセットする。
+
+  \item setAnswerBatch(self,answerBatch)
+
+  バッチラベルデータをニューラルネットにセットする。
+
+  \item calculate(self)
+
+  現在セットされている入力に基づいてニューラルネットを活性化させ順方向伝播を行う。
+
+  \item getLoss(self)
+
+  現在の出力とセットされているラベルデータに基づいてクロスエントロピー誤差平均を算出する。
+
+\end{itemize}
+
+%#################################################
+\subsection{layerモジュール}
+ニューラルネットワークの部品となるlayerモジュール内のクラスはこのプログラム群において重要な役割を果たしている。その詳細を以下に示す。
+
+%#####
+\subsubsection{Layerクラス}
+このモジュール内の全てのLayerクラスのベースクラスであり、他のLayerはこのクラスを必ず継承する。層についての基本の機能を備えている。
+
+課題２から追加されたインスタンス変数、メソッドは以下の通りである。
+
+\begin{itemize}
+  \item self.lossFunction
+
+  誤差計算に使用する関数を格納するインスタンス変数。初期設定ではクロスエントロピー誤差関数がセットされている。
+
+  \item getLoss(self, answer)
+
+  現在の出力値と引数に指定したラベルデータを元に、self.lossFunctionに格納された関数を使用して計算を行い、誤差の値を返す。
+
+\end{itemize}
+
+その他のインスタンス変数、メソッドは以下の通りである。
+
+\begin{itemize}
+  \item self.dimension
+
+  層に含まれるニューロンの数、すなわち層の次元数を表す。コンストラクタの引数によって初期化される。
+
+  \item self.output
+
+  層の出力を表す。caluculateメソッドによって更新され、現在の最新の出力情報を保持する。初期値は全て０である。
+
+  \item \_\_init\_\_(self, dimension)
+
+  インスタンスを作成し値を初期化する。層に含まれるニューロンの数(次元数)はここで決定する。
+
+  \item calculate(self)
+
+  現在の最新の情報を使用して出力を更新する。更新後の値を返す。
+
+  \item getOutput(self)
+
+  現在の最新の出力情報を返す。このメソッドでは出力値の更新は行われない。
+
+  \item confirmParameters(self)
+
+  層についての情報を標準出力に表示する。
+
+  \item getDimension(self)
+
+  層が含むニューロンの数、すなわち次元数を返す。
+\end{itemize}
+
+%#####
+\subsubsection{InputLayerクラス}
+入力層を表すクラス。Layerクラスを継承する。
+
+課題２から追加されたメソッドは以下の通りである。
+
+\begin{itemize}
+  \item setInputBatch(self, inputBatch)
+
+  バッチ入力をニューラルネットにセットする。
+\end{itemize}
+
+その他のインスタンス変数、メソッドは以下の通りである。
+\begin{itemize}
+  \item self.input
+
+  入力を表す変数。初期値は全て０である。setInputメソッドによって設定する。
+
+  \item setInput(self, inputData)
+
+  入力を設定する。引数に与えられた配列は１次元に圧縮される。
+
+  \item calculate(self)
+
+  Layerクラスのメソッドをオーバーライドしている。現在の入力の値をそのまま出力として設定する。
+\end{itemize}
+
+%#####
+\subsubsection{ConversionLayerクラス}
+入力に対し重みをつけ、さらに何らかの活性関数を適応したものを出力とする層、すなわち何らかの変換を行う層を表す。具体的な実装としては後に示すHiddenLayerやOutputLayerがある。
+
+主なインスタンス変数、メソッドは以下の通りである。
+\begin{itemize}
+  \item self.prevLayer
+
+  直前の層のインスタンスを保持する。コンストラクタの引数によって初期化される。
+
+  \item self.weightSize
+
+  入力に掛けられる重み行列のサイズを表したタプル。前の層の次元情報とこの層の次元情報から自動的に初期化される。
+
+  \item self.shiftSize
+
+  入力に加算される閾値ベクトルのサイズを表したタプル。この層の次元情報から自動的に初期化される。
+
+  \item self.weight
+
+  入力に掛けられる重み行列を表す変数。このクラスでは単位行列に初期化される。
+
+  \item self.shift
+
+  入力に加算される閾値ベクトルを表す変数。このクラスではゼロベクトルに初期化される。
+
+  \item self.activator
+
+  重み付け後に適応される活性関数をあらわす変数。このクラスでは恒等変換に初期化される。
+
+  \item calculate(self)
+
+  Layerクラスのメソッドをオーバーライドしている。まず前の層のcalculateを行い、その最新の出力を入力として受け取る。その入力にself.weightをかけ、self.shiftを加算することで重み付けを行う。最後に活性関数self.activatorを適応し得られた値を最新の出力として更新する。また、更新後の値を返す。この再帰的なcalculateの呼び出しにより、ニューラルネットワークの最後の層のcalculateを呼び出すことでネットワーク全ての値を順方向に更新できることになる。
+
+  \item setWeight(self, weight)
+
+  重み行列self.weightを設定する。この層に合わない形の行列が入力された場合には設定は行われず、警告文が標準出力に表示される。
+
+  \item setShift(self, shift)
+
+  閾値ベクトルself.shiftを設定する。この層に合わない形のベクトルが入力された場合には設定は行われず、警告文が標準出力に表示される。
+
+  \item setActivator(self, function)
+
+  活性化関数self.activatorを設定する。関数型以外の値が入力された場合には設定は行われず、警告文が標準出力に表示される。
+\end{itemize}
+
+%#####
+\subsubsection{HiddenLayerクラス}
+中間層を表すクラス。変換を行う層であるので、ConversionLayerを継承する。
+
+ConversionLayerとの違いは、その初期化の内容である。こちらのクラスでは、コンストラクタで２つの乱数シードweightSeedとshiftSeedを要求し（デフォルトの値は１）、その乱数シードを使って生成したランダム値に基づいて重み行列self.weightと閾値ベクトルself.shiftの初期値が設定される。また、活性化関数self.activatorは\textbf{シグモイド関数}に初期化される。
+
+\subsubsection{OutputLayerクラス}
+出力層を表すクラス。変換を行う層であるので、ConversionLayerを継承する。
+
+ConversionLayerとの違いは、その初期化の内容である。こちらのクラスでは、コンストラクタで２つの乱数シードweightSeedとshiftSeedを要求し（デフォルトの値は１）、その乱数シードを使って生成したランダム値に基づいて重み行列self.weightと閾値ベクトルself.shiftの初期値が設定される。また、活性化関数self.activatorは\textbf{ソフトマックス関数}に初期化される。
+
+%#########################################
+\subsection{dataモジュール}
+処理の対象となるデータを表現したクラスを集めたモジュール。
+
+\subsubsection{MnistDataBoxクラス}
+MNISTデータセットを表すクラス。外部仕様としては後に記すMnistDataクラスの集合であるが、内部仕様としては単一MNISTデータを取り出す時にMnistDataクラスを生成する。また、バッチの生成も行う。
+
+主なメソッドは以下の通りである。
+
+\begin{itemize}
+  \item getSingleData(self, num)
+
+  インデックスを引数で指定し、単一のMNISTデータを表すMnistDataオブジェクトを取得する。
+
+  \item shuffle(self, seed = 1)
+
+  内部的なMNISTデータの保持順、インデックスをシャッフルする。単一MNISTデータやバッチを取り出す際に、シャッフルの前後ではインデックスが同一であっても別のデータを取り出すことができる。
+
+  \item getImageBatch(self, batchSize, shift = 0)
+
+  画像データをバッチ形式で取り出す。引数にはバッチサイズとバッチを取り出す基準となるインデックスを指定する。
+
+  \item getAnswerVecotrBatch(self, batchSize, shift = 0)
+
+  ラベルデータをバッチ形式で取り出す。引数にはバッチサイズとバッチを取り出す基準となるインデックスを指定する。
+
+  \item getSize(self)
+
+  MNISTデータセットのサイズ（格納しているMNISTデータの数）を返す。
+\end{itemize}
+
+%####
+\subsubsection{MnistDataクラス}
+MNIST単一データを表すクラス。
+
+主なメソッドは以下の通り。
+
+\begin{itemize}
+  \item getImage(self)
+
+  画像データを行列形式で取り出す。
+
+  \item getAnswer(self)
+
+  ラベルデータを取り出す。
+
+  \item getAnswerAsVector(self, size = None)
+
+  ラベルデータを、そのラベルに対応するインデックスが１、それ以外のインデックスが０のベクトル形式で取り出す。
+
+\end{itemize}
+
+\section{実行結果}
+
+「\textgreater\textgreater」以下が入力、「Result. TotalLoss :」以下が出力である。
+
+実行例を以下に示す。
+
+\begin{verbatim}
+  ....neural_network> python task2.py
+  ### task2 ###
+  batch mode
+  start loading (testing data)
+  finish loading
+  Input random seed number of batch.
+  select number.
+  >> 0
+  0 is selected.
+  start
+
+  Result.
+  totalLoss : 2.30539980393
+
+  continue?
+  select yes or no.
+  >> yes
+  Input random seed number of batch.
+  select number.
+  >> 4
+  4 is selected.
+  start
+
+  Result.
+  totalLoss : 2.30575362662
+
+  continue?
+  select yes or no.
+  >> no
+  Bye.
+\end{verbatim}
+
+\section{工夫}
+\begin{itemize}
+  \item 全てのプログラムはオブジェクト指向・ドメインモデル方式で設計されている。これによりモジュールの再利用・拡張が容易になり、今後様々なニューラルネットを組み上げることができる。
+  \item 各レイヤー内で使用される関数を分離している。これにより、容易に使用される関数を変更することができ、幅広い種類のニューラルネットを簡単に構成できる。
+  \item 入出力を任意の回数行えるようなインターフェースとした。
+  \item バッチは元データの行列をスライスして作成している。バッチ作成にforループを使用しないことで高速化を図った。
+\end{itemize}
+
+\section{問題点}
+一般化を心がける余り、コードがやや肥大化してしまっている。応用課題に取り組む時まで一般化の恩恵は受けられないので、効果が今のところ実感できない。
+
+\end{document}

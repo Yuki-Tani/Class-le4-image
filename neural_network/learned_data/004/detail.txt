@@ -1,4 +1,5 @@
 ReLU
+hidden 50
 
 batch size : 10
 seed : 0

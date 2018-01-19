@@ -41,6 +41,10 @@ updateRatio = inputM.selectNumber() * 0.001
 #repeatEpoch = 1
 #epochSize = 1
 
+#計測スタート
+import time
+start = time.time()
+
 for e in range(0,repeatEpoch) :
     print("---- epoch "+str(e+1)+" ----")
     batchMaker.reset(seed + e)
@@ -64,7 +68,9 @@ for e in range(0,repeatEpoch) :
     print("total percent of current answer : " + str(total) + "%")
 
 print("finish.")
-
+#計測終了
+elapsed_time = time.time() - start
+print ("elapsed_time:{0}".format(elapsed_time) + "[sec]")
 
 print("---- save section ----")
 print("save?")

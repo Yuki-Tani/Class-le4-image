@@ -5,6 +5,7 @@ import data
 import numpy as np
 import matplotlib.pyplot as plt
 from pylab import cm
+import time
 
 SAMPLE_IMAGE = np.array([[0,100,0],[100,200,100],[0,100,0]])
 SAMPLE_WEIGHT = np.identity(9) * 0.01
@@ -97,7 +98,6 @@ def dataTest():
     inputM = ioex.InputManager()
     trainingData = inputM.getMnistTrainingData()
 
-    import time
     print("\ngetImageBatch")
     for i in range(1,11):
         #計測スタート

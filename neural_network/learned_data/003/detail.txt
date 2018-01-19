@@ -1,4 +1,5 @@
 nomal
+hidden 50
 
 batchSize 10
 seed 0

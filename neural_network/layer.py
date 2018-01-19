@@ -7,6 +7,7 @@ class Layer:
     def __init__(self, dimension):
         self.dimension = dimension
         self.output = np.zeros((dimension, 1))
+        #誤差関数
         self.lossFunction = util.crossEntropy
 
     def calculate(self):
@@ -87,7 +88,7 @@ class ConversionLayer(Layer):
         #逆伝播関数(layer, dE/dOut -> dE/dIn, dE/dWeight, dE/dShift)
         self.backPropagator = learning.backPropIdentity
         #更新関数(layer, dE/dWidth, dE/dShift, learningRatio)
-        self.updator = learning.updateBySDG
+        self.updator = learning.updateBySGD
 
     def getInput(self):
         return self.prevLayer.getOutput()

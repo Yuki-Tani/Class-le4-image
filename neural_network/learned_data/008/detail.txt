@@ -1,0 +1,15 @@
+ReLU
+hidden 100
+BatchSize 100 -> 50 -> 10
+ratio 10 -> 5 -> 2
+seed 0
+
+
+total loss : 0.0576285367558
+total percent of current answer : 98.4933333333%
+
+Testing Result
+percent of current : 97.57000000000001%
+
+Contest Result
+percent of current : 65.5%

@@ -1,0 +1,666 @@
+３層ニューラルネット(28*28,50,10)＋ReLU
+batch Size 10
+初期値 SEED 100
+実行時 SEED 0
+学習率　0.01
+
+学習回数　50 epoch
+
+---- epoch 50 ----
+total loss : 0.0226838668391
+total percent of current answer : 99.5683333333%
+
+Testing Result
+percent of current : 97.26%
+
+Contest Result
+percent of current : 73.0% -> 67.5% (67.47%)
+
+----------------------------------------------------------
+
+### advanced2 [ReLU] ###
+ ---- mode select ----
+0 : [training] learning mode
+10 : [testing] single select mode
+11 : [testing] percent check mode
+20 : [contest] single select mode
+21 : [contest] percent check mode
+22 : [contest] file making mode
+30 : [training-test] complete mode
+select number.
+>> 30
+30 is selected.
+start loading (training data)
+finish loading
+start loading (testing data)
+finish loading
+start loading (contest data)
+finish loading
+---- load section ----
+use weight and shift data file?
+select yes or no.
+>> no
+input batch size
+select number.
+>> 10
+10 is selected.
+input repeat epoch
+select number.
+>> 50
+50 is selected.
+input seed
+select number.
+>> 0
+0 is selected.
+input update ratio (mili)
+select number.
+>> 10
+10 is selected.
+---- learning section ----
+---- epoch 1 ----
+60000
+total loss : 0.665730563874
+total percent of current answer : 82.295%
+calculate
+10000
+Testing Result
+percent of current : 90.36999999999999%
+calculate
+100
+Contest Result
+percent of current : 53.0%
+---- epoch 2 ----
+60000
+total loss : 0.297427180743
+total percent of current answer : 91.5283333333%
+calculate
+10000
+Testing Result
+percent of current : 91.93%
+calculate
+100
+Contest Result
+percent of current : 52.0%
+---- epoch 3 ----
+60000
+total loss : 0.246708116394
+total percent of current answer : 93.0033333333%
+calculate
+10000
+Testing Result
+percent of current : 93.06%
+calculate
+100
+Contest Result
+percent of current : 56.00000000000001%
+---- epoch 4 ----
+60000
+total loss : 0.210675288633
+total percent of current answer : 94.0366666667%
+calculate
+10000
+Testing Result
+percent of current : 93.81%
+calculate
+100
+Contest Result
+percent of current : 59.0%
+---- epoch 5 ----
+60000
+total loss : 0.184020512014
+total percent of current answer : 94.8%
+calculate
+10000
+Testing Result
+percent of current : 94.5%
+calculate
+100
+Contest Result
+percent of current : 63.0%
+---- epoch 6 ----
+60000
+total loss : 0.163672164517
+total percent of current answer : 95.4033333333%
+calculate
+10000
+Testing Result
+percent of current : 94.93%
+calculate
+100
+Contest Result
+percent of current : 64.0%
+---- epoch 7 ----
+60000
+total loss : 0.147553680672
+total percent of current answer : 95.8533333333%
+calculate
+10000
+Testing Result
+percent of current : 95.47%
+calculate
+100
+Contest Result
+percent of current : 66.0%
+---- epoch 8 ----
+60000
+total loss : 0.134492132066
+total percent of current answer : 96.2216666667%
+calculate
+10000
+Testing Result
+percent of current : 95.73%
+calculate
+100
+Contest Result
+percent of current : 66.0%
+---- epoch 9 ----
+60000
+total loss : 0.123728614937
+total percent of current answer : 96.54%
+calculate
+10000
+Testing Result
+percent of current : 95.98%
+calculate
+100
+Contest Result
+percent of current : 66.0%
+---- epoch 10 ----
+60000
+total loss : 0.114528482782
+total percent of current answer : 96.8%
+calculate
+10000
+Testing Result
+percent of current : 96.21%
+calculate
+100
+Contest Result
+percent of current : 67.0%
+---- epoch 11 ----
+60000
+total loss : 0.10663283071
+total percent of current answer : 97.0216666667%
+calculate
+10000
+Testing Result
+percent of current : 96.31%
+calculate
+100
+Contest Result
+percent of current : 67.0%
+---- epoch 12 ----
+60000
+total loss : 0.0996974426117
+total percent of current answer : 97.18%
+calculate
+10000
+Testing Result
+percent of current : 96.47%
+calculate
+100
+Contest Result
+percent of current : 67.0%
+---- epoch 13 ----
+60000
+total loss : 0.093725633447
+total percent of current answer : 97.3416666667%
+calculate
+10000
+Testing Result
+percent of current : 96.59%
+calculate
+100
+Contest Result
+percent of current : 67.0%
+---- epoch 14 ----
+60000
+total loss : 0.0883728251955
+total percent of current answer : 97.5416666667%
+calculate
+10000
+Testing Result
+percent of current : 96.67%
+calculate
+100
+Contest Result
+percent of current : 67.0%
+---- epoch 15 ----
+60000
+total loss : 0.08353157328
+total percent of current answer : 97.6566666667%
+calculate
+10000
+Testing Result
+percent of current : 96.83%
+calculate
+100
+Contest Result
+percent of current : 69.0%
+---- epoch 16 ----
+60000
+total loss : 0.0792232744524
+total percent of current answer : 97.8066666667%
+calculate
+10000
+Testing Result
+percent of current : 96.91%
+calculate
+100
+Contest Result
+percent of current : 68.0%
+---- epoch 17 ----
+60000
+total loss : 0.075230377137
+total percent of current answer : 97.93%
+calculate
+10000
+Testing Result
+percent of current : 96.94%
+calculate
+100
+Contest Result
+percent of current : 68.0%
+---- epoch 18 ----
+60000
+total loss : 0.0715950028598
+total percent of current answer : 98.0216666667%
+calculate
+10000
+Testing Result
+percent of current : 97.04%
+calculate
+100
+Contest Result
+percent of current : 69.0%
+---- epoch 19 ----
+60000
+total loss : 0.0683272313858
+total percent of current answer : 98.1116666667%
+calculate
+10000
+Testing Result
+percent of current : 97.02%
+calculate
+100
+Contest Result
+percent of current : 69.0%
+---- epoch 20 ----
+60000
+total loss : 0.0651839307812
+total percent of current answer : 98.2%
+calculate
+10000
+Testing Result
+percent of current : 97.03%
+calculate
+100
+Contest Result
+percent of current : 70.0%
+---- epoch 21 ----
+60000
+total loss : 0.0623379223659
+total percent of current answer : 98.2666666667%
+calculate
+10000
+Testing Result
+percent of current : 97.07000000000001%
+calculate
+100
+Contest Result
+percent of current : 70.0%
+---- epoch 22 ----
+60000
+total loss : 0.0596865312876
+total percent of current answer : 98.3366666667%
+calculate
+10000
+Testing Result
+percent of current : 97.11%
+calculate
+100
+Contest Result
+percent of current : 70.0%
+---- epoch 23 ----
+60000
+total loss : 0.0572357182113
+total percent of current answer : 98.4283333333%
+calculate
+10000
+Testing Result
+percent of current : 97.11999999999999%
+calculate
+100
+Contest Result
+percent of current : 70.0%
+---- epoch 24 ----
+60000
+total loss : 0.0549519254897
+total percent of current answer : 98.4966666667%
+calculate
+10000
+Testing Result
+percent of current : 97.13000000000001%
+calculate
+100
+Contest Result
+percent of current : 70.0%
+---- epoch 25 ----
+60000
+total loss : 0.0527577407069
+total percent of current answer : 98.57%
+calculate
+10000
+Testing Result
+percent of current : 97.13000000000001%
+calculate
+100
+Contest Result
+percent of current : 71.0%
+---- epoch 26 ----
+60000
+total loss : 0.0507319479079
+total percent of current answer : 98.635%
+calculate
+10000
+Testing Result
+percent of current : 97.18%
+calculate
+100
+Contest Result
+percent of current : 72.0%
+---- epoch 27 ----
+60000
+total loss : 0.048836259934
+total percent of current answer : 98.695%
+calculate
+10000
+Testing Result
+percent of current : 97.15%
+calculate
+100
+Contest Result
+percent of current : 71.0%
+---- epoch 28 ----
+60000
+total loss : 0.047038117477
+total percent of current answer : 98.7583333333%
+calculate
+10000
+Testing Result
+percent of current : 97.2%
+calculate
+100
+Contest Result
+percent of current : 72.0%
+---- epoch 29 ----
+60000
+total loss : 0.0453519935686
+total percent of current answer : 98.82%
+calculate
+10000
+Testing Result
+percent of current : 97.16%
+calculate
+100
+Contest Result
+percent of current : 71.0%
+---- epoch 30 ----
+60000
+total loss : 0.0437141318002
+total percent of current answer : 98.8683333333%
+calculate
+10000
+Testing Result
+percent of current : 97.14%
+calculate
+100
+Contest Result
+percent of current : 72.0%
+---- epoch 31 ----
+60000
+total loss : 0.0421602218796
+total percent of current answer : 98.91%
+calculate
+10000
+Testing Result
+percent of current : 97.23%
+calculate
+100
+Contest Result
+percent of current : 72.0%
+---- epoch 32 ----
+60000
+total loss : 0.0406668452954
+total percent of current answer : 98.9583333333%
+calculate
+10000
+Testing Result
+percent of current : 97.22%
+calculate
+100
+Contest Result
+percent of current : 72.0%
+---- epoch 33 ----
+60000
+total loss : 0.039304021344
+total percent of current answer : 98.9983333333%
+calculate
+10000
+Testing Result
+percent of current : 97.19%
+calculate
+100
+Contest Result
+percent of current : 72.0%
+---- epoch 34 ----
+60000
+total loss : 0.0379434834955
+total percent of current answer : 99.06%
+calculate
+10000
+Testing Result
+percent of current : 97.17%
+calculate
+100
+Contest Result
+percent of current : 73.0%
+---- epoch 35 ----
+60000
+total loss : 0.0366444498737
+total percent of current answer : 99.1066666667%
+calculate
+10000
+Testing Result
+percent of current : 97.18%
+calculate
+100
+Contest Result
+percent of current : 73.0%
+---- epoch 36 ----
+60000
+total loss : 0.0354417619897
+total percent of current answer : 99.1366666667%
+calculate
+10000
+Testing Result
+percent of current : 97.22%
+calculate
+100
+Contest Result
+percent of current : 71.0%
+---- epoch 37 ----
+60000
+total loss : 0.0342804591583
+total percent of current answer : 99.18%
+calculate
+10000
+Testing Result
+percent of current : 97.26%
+calculate
+100
+Contest Result
+percent of current : 73.0%
+---- epoch 38 ----
+60000
+total loss : 0.0331550908917
+total percent of current answer : 99.22%
+calculate
+10000
+Testing Result
+percent of current : 97.22%
+calculate
+100
+Contest Result
+percent of current : 72.0%
+---- epoch 39 ----
+60000
+total loss : 0.0321203084379
+total percent of current answer : 99.25%
+calculate
+10000
+Testing Result
+percent of current : 97.22%
+calculate
+100
+Contest Result
+percent of current : 72.0%
+---- epoch 40 ----
+60000
+total loss : 0.0310670313276
+total percent of current answer : 99.29%
+calculate
+10000
+Testing Result
+percent of current : 97.28%
+calculate
+100
+Contest Result
+percent of current : 72.0%
+---- epoch 41 ----
+60000
+total loss : 0.0300753321385
+total percent of current answer : 99.325%
+calculate
+10000
+Testing Result
+percent of current : 97.28999999999999%
+calculate
+100
+Contest Result
+percent of current : 72.0%
+---- epoch 42 ----
+60000
+total loss : 0.0291017383725
+total percent of current answer : 99.3566666667%
+calculate
+10000
+Testing Result
+percent of current : 97.27%
+calculate
+100
+Contest Result
+percent of current : 72.0%
+---- epoch 43 ----
+60000
+total loss : 0.028229533085
+total percent of current answer : 99.3766666667%
+calculate
+10000
+Testing Result
+percent of current : 97.26%
+calculate
+100
+Contest Result
+percent of current : 73.0%
+---- epoch 44 ----
+60000
+total loss : 0.0273191079263
+total percent of current answer : 99.4083333333%
+calculate
+10000
+Testing Result
+percent of current : 97.23%
+calculate
+100
+Contest Result
+percent of current : 73.0%
+---- epoch 45 ----
+60000
+total loss : 0.0264899932075
+total percent of current answer : 99.42%
+calculate
+10000
+Testing Result
+percent of current : 97.22%
+calculate
+100
+Contest Result
+percent of current : 73.0%
+---- epoch 46 ----
+60000
+total loss : 0.0256699023928
+total percent of current answer : 99.4583333333%
+calculate
+10000
+Testing Result
+percent of current : 97.24000000000001%
+calculate
+100
+Contest Result
+percent of current : 72.0%
+---- epoch 47 ----
+60000
+total loss : 0.0248730135667
+total percent of current answer : 99.4866666667%
+calculate
+10000
+Testing Result
+percent of current : 97.22%
+calculate
+100
+Contest Result
+percent of current : 72.0%
+---- epoch 48 ----
+60000
+total loss : 0.0241366851648
+total percent of current answer : 99.515%
+calculate
+10000
+Testing Result
+percent of current : 97.24000000000001%
+calculate
+100
+Contest Result
+percent of current : 72.0%
+---- epoch 49 ----
+60000
+total loss : 0.0234065996208
+total percent of current answer : 99.535%
+calculate
+10000
+Testing Result
+percent of current : 97.24000000000001%
+calculate
+100
+Contest Result
+percent of current : 72.0%
+---- epoch 50 ----
+60000
+total loss : 0.0226838668391
+total percent of current answer : 99.5683333333%
+calculate
+10000
+Testing Result
+percent of current : 97.26%
+calculate
+100
+Contest Result
+percent of current : 73.0%
+finish.
+---- save section ----
+save?
+select yes or no.
+>> yes
+saved.
+Bye.

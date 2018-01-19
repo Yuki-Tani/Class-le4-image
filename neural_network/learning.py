@@ -39,7 +39,9 @@ def backPropSoftmaxAndCrossEntropy(conversionLayer, answerMatrix):
     dEdActivatorIn = (activatorOut - answerMatrix) / batchSize
     return backPropFullyConnect(conversionLayer, dEdActivatorIn)
 
-def updateBySDG(conversionLayer,dEdWidth , dEdShift, learningRatio = 0.01) :
+#更新関数
+#確率的勾配降下法
+def updateBySGD(conversionLayer, dEdWidth , dEdShift, learningRatio = 0.01) :
     newWeight = conversionLayer.weight - learningRatio * dEdWidth
     newShift = conversionLayer.shift - learningRatio * dEdShift
     conversionLayer.setWeight(newWeight)

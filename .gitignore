@@ -4,3 +4,5 @@ MNIST
 *.zip
 #ファイル情報直書きのため管理から外す
 neural_network/ioex.py
+#個人情報保護のため外す
+report

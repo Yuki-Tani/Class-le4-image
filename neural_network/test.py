@@ -128,10 +128,103 @@ def dataTest():
     elapsed_time = time.time() - start
     print ("elapsed_time:{0}".format(elapsed_time) + "[sec]")
 
+def inputConvTest():
+    inputM = ioex.InputManager()
+    outputM = ioex.OutputManager()
+    trainingData = inputM.getMnistTrainingData()
+    sample = trainingData.getImageBatch(5)
+    outputM.showPictureFromBatch(sample,(28,28))
+
+    inputLayer = layer.InputLayer(28*28)
+    conv = layer.ConvolutionalLayer(4,3,inputLayer)
+    outputLayer = layer.OutputLayer(10,conv)
+
+    #conv.setWeight(np.array([[1,1,1,1,-8,1,1,1,1],[1,0,1,0,-4,0,1,0,1],[0,1,0,1,-4,1,0,1,0],[0,0,0,0,1,0,0,0,0]]))
+    inputLayer.setInputBatch(sample)
+
+    for i in range(0,10000):
+        outputLayer.calculate()
+        if i%1000 == 0 :
+            outputM.showPictureFromBatch(conv.getOutput(),(28*4,28))
+            print(conv.getWeight())
+        outputLayer.update(trainingData.getAnswerVecotrBatch(5))
+
+#inputConvTest()
+
+"""
+testInput = np.array([[11,2,3,4,5],[12,2,3,4,5],[13,2,3,4,5],[14,2,3,4,5],[21,2,3,4,5],[22,2,3,4,5],[23,2,3,4,5],[24,2,3,4,5],[31,2,3,4,5],[32,2,3,4,5],[33,2,3,4,5],[34,2,3,4,5],[41,2,3,4,5],[42,2,3,4,5],[43,2,3,4,5],[44,2,3,4,5]])
+
+inputLayer = layer.InputLayer(16)
+conv = layer.ConvolutionalLayer(4,3,inputLayer)
+inputLayer.normalization = 1
+inputLayer.setInputBatch(testInput)
+result = conv.calculate()
+
+print(result)
+"""
+
+
+dEdOutTest = np.array( [[11,2,3,4,5],[12,2,3,4,5],[13,2,3,4,5],[14,2,3,4,5],[21,2,3,4,5],[22,2,3,4,5],[23,2,3,4,5],[24,2,3,4,5],[31,2,3,4,5],[32,2,3,4,5],[33,2,3,4,5],[34,2,3,4,5],[41,2,3,4,5],[42,2,3,4,5],[43,2,3,4,5],[44,2,3,4,5],[11,2,3,4,5],[12,2,3,4,5],[13,2,3,4,5],[14,2,3,4,5],[21,2,3,4,5],[22,2,3,4,5],[23,2,3,4,5],[24,2,3,4,5],[31,2,3,4,5],[32,2,3,4,5],[33,2,3,4,5],[34,2,3,4,5],[41,2,3,4,5],[42,2,3,4,5],[43,2,3,4,5],[44,2,3,4,5],[11,2,3,4,5],[12,2,3,4,5],[13,2,3,4,5],[14,2,3,4,5],[21,2,3,4,5],[22,2,3,4,5],[23,2,3,4,5],[24,2,3,4,5],[31,2,3,4,5],[32,2,3,4,5],[33,2,3,4,5],[34,2,3,4,5],[41,2,3,4,5],[42,2,3,4,5],[43,2,3,4,5],[44,2,3,4,5],[11,2,3,4,5],[12,2,3,4,5],[13,2,3,4,5],[14,2,3,4,5],[21,2,3,4,5],[22,2,3,4,5],[23,2,3,4,5],[24,2,3,4,5],[31,2,3,4,5],[32,2,3,4,5],[33,2,3,4,5],[34,2,3,4,5],[41,2,3,4,5],[42,2,3,4,5],[43,2,3,4,5],[44,2,3,4,5]])
+
+#conv.update(dEdOutTest)
+
+inputLayer = layer.InputLayer(64)
+inputLayer.normalization = 1
+pooling = layer.PoolingLayer(2,(16,4),inputLayer)
+inputLayer.setInputBatch(dEdOutTest)
+
+result = pooling.calculate()
+print(result)
+
+pooling.update(result)
+
+"""
+t1 = np.array([[1,2,3],[4,5,6],[7,8,9],[10,11,12]])
+t2 = np.array([1,2,9])
+
+print(t1.reshape(2,2,3)*t2)
+print(t1.reshape(2,2,3)==t2)
+
+dt = np.zeros(t1.shape)
+print(dt)
+dt[t1==t2] = 1
+print(dt)
+"""
+
+"""
+testOutput = np.array([[11,12,13,14,21,22,23,24,31,32,33,34,41,42,43,44,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5]])
+
+result = conv.postCalculate(testOutput)
+print(result)
+"""
+"""
+dim2a = np.array(
+[[10,10,10,1,1,1,10,10,10,1,1,1,10,10,10,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+ [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+ [3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],
+ [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4],
+ [5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5]]
+)
+dim2b = np.array([[1,1,1],
+                  [1,1,1],
+                  [1,1,1]])
+
+print(dim2a[1:-1,1:-1])
+
+stage1 = dim2a.reshape((-1,2,3,2,3))
+print(stage1)
+stage2 = stage1.transpose((0,1,3,2,4))
+print(stage2)
+stage3 = stage2.reshape((-1,4,9))
+print(stage3)
+
+print(stage3.shape[2])
+"""
+"""
 ar = np.array([[1,-2],[-7,1],[0,0]])
 print(util.relu(ar))
 print(util.sigmoid(ar))
-
+"""
 #dataTest()
 
 """

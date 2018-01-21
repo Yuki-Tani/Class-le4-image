@@ -1,0 +1,11 @@
+task3
+epoch 50
+
+---- epoch 50 ----
+total loss : 0.0932378057892
+total percent of current answer : 97.44%
+
+Testing Result
+percent of current : 96.61%
+Contest Result
+percent of current : 63.0%

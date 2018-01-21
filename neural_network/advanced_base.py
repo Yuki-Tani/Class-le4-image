@@ -8,7 +8,7 @@ from pylab import cm
 
 DEFAULT_TARGET_FILE_NAME = "neural_network/learned_data/answerForContest.txt"
 
-def singleCheck(neuralNet, mnistDataBox, num) :
+def singleCheck(neuralNet, mnistDataBox, num, inputM, allShowPic = False) :
     mnist = mnistDataBox.getSingleData(num)
     image = mnist.getImage()
     answerVec = mnist.getAnswerAsVector()
@@ -31,8 +31,13 @@ def singleCheck(neuralNet, mnistDataBox, num) :
             print("#",end = "")
         print()
     print("totalLoss : " + str(totalLoss))
-    plt.imshow(image, cmap=cm.gray)
-    plt.show()
+    showPic = True
+    if not allShowPic :
+        print("\nshow picture?")
+        showPic = inputM.selectYesOrNo()
+    if showPic :
+        plt.imshow(image, cmap=cm.gray)
+        plt.show()
 
 def percentCheck(neuralNet, mnistDataBox, repeat, title = "") :
     currentQuantity = 0
@@ -51,6 +56,19 @@ def percentCheck(neuralNet, mnistDataBox, repeat, title = "") :
 
     print("\n" + title + " Result")
     print("percent of current : " + str(currentQuantity / repeat * 100) + "%")
+
+def mistakeCheck(neuralNet, mnistDataBox, num, repeat, inputM) :
+    for i in range(num, num+repeat):
+        mnist = mnistDataBox.getSingleData(i)
+        image = mnist.getImage()
+        answer = mnist.getAnswer()
+        neuralNet.setInput(image)
+        result = neuralNet.calculate().argmax()
+        if result != answer:
+            singleCheck(neuralNet, mnistDataBox, i, inputM, True)
+            print("\nexit?")
+            if inputM.selectYesOrNo() :
+                return
 
 def makeAnswerFile(neuralNet, mnistDataBox, outputManager,
                     targetFileName = DEFAULT_TARGET_FILE_NAME) :
@@ -143,9 +161,11 @@ def runMainController(neuralNet, inputM, outputM):
     print("0 : [training] learning mode")
     print("10 : [testing] single select mode")
     print("11 : [testing] percent check mode")
+    print("12 : [testing] mistake check mode")
     print("20 : [contest] single select mode")
     print("21 : [contest] percent check mode")
-    print("22 : [contest] file making mode")
+    print("22 : [contest] mistake check mode")
+    print("23 : [contest] file making mode")
     print("30 : [training-test] complete mode")
     mode = inputM.selectNumber()
 
@@ -155,9 +175,9 @@ def runMainController(neuralNet, inputM, outputM):
         runLearning(neuralNet,inputM,outputM, mode == 30)
 
     else :
-        if mode == 10 or mode == 11 :
+        if mode == 10 or mode == 11 or mode == 12 :
             testingData = inputM.getMnistTestingData()
-        if mode == 20 or mode == 21 or mode == 22 :
+        if mode == 20 or mode == 21 or mode == 22 or mode == 23 :
             testingData = inputM.getLe4MnistData()
 
         print("---- load section ----")
@@ -170,7 +190,7 @@ def runMainController(neuralNet, inputM, outputM):
             num = inputM.selectNumber()
             loop = True
             while(loop):
-                singleCheck(neuralNet,testingData,num)
+                singleCheck(neuralNet,testingData,num, inputM)
                 print("\nnext?")
                 loop = inputM.selectYesOrNo()
                 num = num + 1
@@ -185,8 +205,19 @@ def runMainController(neuralNet, inputM, outputM):
             repeat = 200
             percentCheck(neuralNet,testingData,repeat,"Contest")
 
+        # [testing] mistake check mode
+        # [contest] mistake check mode
+        elif mode == 12 or mode == 22 :
+            print("select start image number")
+            num = inputM.selectNumber()
+            if mode == 12 :
+                repeat = testingData.getSize()
+            else :
+                repeat = 200
+            mistakeCheck(neuralNet,testingData,num,repeat,inputM)
+
         # [contest] file making mode
-        elif mode == 22 :
+        elif mode == 23 :
             print("\nwrite answers?")
             if inputM.selectYesOrNo() :
                 makeAnswerFile(neuralNet,testingData,outputM)

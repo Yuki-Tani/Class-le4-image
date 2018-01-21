@@ -107,3 +107,53 @@ class NeuralNetwork3LayersReLU(NeuralNetwork3Layers) :
 
         # 正解データ
         self.answer = np.zeros(outputDim)
+
+class NeuralNetwork1C1P3LReLU(NeuralNetwork3Layers) :
+    def __init__(self, inputDim, convFilterNum, convFilterDim, poolFilterDim, hiddenDim, outputDim, seed = 1):
+
+        #畳み込み+プーリング付き３層ニューラルネット
+        self.inputLayer = layer.InputLayer(inputDim)
+        self.convLayer = layer.ConvolutionalLayer(
+                    convFilterNum,convFilterDim,self.inputLayer,seed)
+        self.poolLayer = layer.PoolingLayer(
+                                    poolFilterDim,self.convLayer)
+        self.hiddenLayer = layer.HiddenLayer(hiddenDim,self.poolLayer,seed)
+        self.outputLayer = layer.OutputLayer(outputDim,self.hiddenLayer,seed)
+
+        self.hiddenLayer.setActivator(util.relu)
+        self.hiddenLayer.setBackPropagator(learning.backPropReLU)
+
+        # 正解データ
+        self.answer = np.zeros(outputDim)
+
+    def save(self,
+        fileCW = "./learned_data/convWeight",
+        fileCS = "./learned_data/convShift",
+        fileHW = "./learned_data/hiddenWeight",
+        fileHS = "./learned_data/hiddenShift",
+        fileOW = "./learned_data/outputWeight",
+        fileOS = "./learned_data/outputShift") :
+
+        np.save(fileCW, self.convLayer.getWeight())
+        np.save(fileCS, self.convLayer.getShift())
+        np.save(fileHW, self.hiddenLayer.getWeight())
+        np.save(fileHS, self.hiddenLayer.getShift())
+        np.save(fileOW, self.outputLayer.getWeight())
+        np.save(fileOS, self.outputLayer.getShift())
+        print("saved.")
+
+    def load(self,
+        fileCW = "./learned_data/convWeight.npy",
+        fileCS = "./learned_data/convShift.npy",
+        fileHW = "./learned_data/hiddenWeight.npy",
+        fileHS = "./learned_data/hiddenShift.npy",
+        fileOW = "./learned_data/outputWeight.npy",
+        fileOS = "./learned_data/outputShift.npy") :
+
+        self.convLayer.setWeight(np.load(fileCW))
+        self.convLayer.setShift(np.load(fileCS))
+        self.hiddenLayer.setWeight(np.load(fileHW))
+        self.hiddenLayer.setShift(np.load(fileHS))
+        self.outputLayer.setWeight(np.load(fileOW))
+        self.outputLayer.setShift(np.load(fileOS))
+        print("loaded.")

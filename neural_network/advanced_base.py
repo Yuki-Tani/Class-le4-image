@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from pylab import cm
 
 DEFAULT_TARGET_FILE_NAME = "neural_network/learned_data/answerForContest.txt"
+LOG_FILE_NAME = "log/learning_log.txt"
 
 def singleCheck(neuralNet, mnistDataBox, num, inputM, allShowPic = False) :
     mnist = mnistDataBox.getSingleData(num)
@@ -54,8 +55,10 @@ def percentCheck(neuralNet, mnistDataBox, repeat, title = "") :
         sys.stdout.write("\r%d" % (i+1))
         sys.stdout.flush()
 
+    percent = currentQuantity / repeat * 100
     print("\n" + title + " Result")
-    print("percent of current : " + str(currentQuantity / repeat * 100) + "%")
+    print("percent of current : " + str(percent) + "%")
+    return percent
 
 def mistakeCheck(neuralNet, mnistDataBox, num, repeat, inputM) :
     for i in range(num, num+repeat):
@@ -119,6 +122,11 @@ def runLearning(neuralNet, inputM, outputM, isCompleteMode = False):
     epochSize = int(trainingData.images.shape[0] / batchSize)
 
     print("---- learning section ----")
+
+    if isCompleteMode :
+        log = outputM.addPrintTextFile(LOG_FILE_NAME,neuralNet.getInfo())
+
+
     for e in range(0,repeatEpoch) :
         print("---- epoch "+str(e+1)+" ----")
         batchMaker.reset(seed + e)
@@ -143,8 +151,11 @@ def runLearning(neuralNet, inputM, outputM, isCompleteMode = False):
         if isCompleteMode :
             #他データで正答率確認
             size = testingData.getSize()
-            percentCheck(neuralNet,testingData,size,"Testing")
-            percentCheck(neuralNet,contestData,200,"Contest")
+            testingPercent = percentCheck(neuralNet,testingData,size,"Testing")
+            contestPercent = percentCheck(neuralNet,contestData,200,"Contest")
+            log = str(e)+" "+str(totalLoss)+" "+str(total)+" "+str(testingPercent)+" "+str(contestPercent)+"\n"
+            outputM.addPrintTextFile(LOG_FILE_NAME, log)
+
 
     print("finish.")
 

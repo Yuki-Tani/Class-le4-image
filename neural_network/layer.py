@@ -211,12 +211,13 @@ class OutputLayer(ConversionLayer):
 
 ##################################################
 class ConvolutionalLayer(ConversionLayer) :
-    def __init__(self, filterNum, filterDim, prevLayer,
+    def __init__(self, filterNum, filterDim, inputImageSize,prevLayer,
                  weightSeed = 1, shiftSeed = 1) :
         # dimension = x^2 * f
         super().__init__(prevLayer.getDimension() * filterNum, prevLayer)
-        x = int(np.sqrt(prevLayer.getDimension()))
-        self.imageSize = (x,x)
+        #x = int(np.sqrt(prevLayer.getDimension()))
+        #self.imageSize = (x,x)
+        self.imageSize = inputImageSize
         self.filterNum = filterNum
         self.filterDim = filterDim
 
@@ -346,11 +347,12 @@ class InternalLayerPostConv(Layer) :
         self.prevLayer.update(dEdIn, learningRatio)
 
 class PoolingLayer(ConversionLayer) :
-    def __init__(self, filterDim, prevLayer) :
+    def __init__(self, filterDim, inputImageSize,prevLayer) :
         # dimension = (f * x^2) / pooling^2
         super().__init__(prevLayer.getDimension() // filterDim**2 , prevLayer)
-        x = int(np.sqrt(prevLayer.getDimension()/(filterDim**2)))
-        self.imageSize = (x*(filterDim**2),x)
+        #x = int(np.sqrt(prevLayer.getDimension()/(filterDim**2)))
+        #self.imageSize = (x*(filterDim**2),x)
+        self.imageSize = inputImageSize
         self.filterDim = filterDim
         self.arrangedMat = None
         self.maxedMat = None

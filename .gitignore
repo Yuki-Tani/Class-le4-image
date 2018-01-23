@@ -1,8 +1,10 @@
 #サイズが大きいため外す
-MNIST
+MNIST/**/*
 #提出用zipフォルダは外す
 *.zip
 #ファイル情報直書きのため管理から外す
 neural_network/ioex.py
 #個人情報保護のため外す
 report
+#学習済みパラメータはサイズが大きいため外す
+neural_network/learned_data/**/*
